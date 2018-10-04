@@ -4,7 +4,7 @@ import numpy as np
 import gym
 import torch.nn as nn
 from baselines.common.vec_env.subproc_vec_env import SubprocVecEnv 
-
+import matplotlib.pyplot as plt
 
 class actorCritic(nn.Module):
 	def __init__(self):
@@ -34,16 +34,17 @@ def gae (rewards, masks, values):
 	gamma = 0.99
 	lambd = 0.95
 
-	T, W, _ = rewards.size()
+	T, W = rewards.size()
 
-	advantages = torch.zeros(T, W, 1)
+	advantages = torch.zeros((T, W))
 
-	adv_t = torch.zeros(W, 1)
-
+	adv_t = torch.zeros(1, W)
 	for t in reversed(range(T)):
 
 		delta = rewards[t] + values[t+1].data * gamma*masks[t] - values[t].data
+
 		adv_t = delta + adv_t*gamma*lambd*masks[t]
+
 		advantages[t] = adv_t
 
 		real_values = values[:T].data + advantages
@@ -56,7 +57,11 @@ def make_env(rank, env_id):
 		return env
 	return env_fn
 
-
+def plotRewards(iteration, rewards):
+	print (rewards)
+	fig = plt.figure()
+	plt.plot(iteration, rewards)
+	plt.pause(10)
 
 
 
