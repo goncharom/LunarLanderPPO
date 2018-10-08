@@ -34,20 +34,20 @@ def gae (rewards, masks, values):
 	gamma = 0.99
 	lambd = 0.95
 
-	T, W = rewards.size()
+	T, W = rewards.shape
 
-	advantages = torch.zeros((T, W))
+	advantages = np.zeros((T, W))
 
-	adv_t = torch.zeros(1, W)
+	adv_t = np.zeros((1, W))
 	for t in reversed(range(T)):
 
-		delta = rewards[t] + values[t+1].data * gamma*masks[t] - values[t].data
+		delta = rewards[t] + values[t+1] * gamma*masks[t] - values[t]
 
 		adv_t = delta + adv_t*gamma*lambd*masks[t]
 
 		advantages[t] = adv_t
 
-		real_values = values[:T].data + advantages
+		real_values = values[:T] + advantages
 
 		return advantages, real_values
 def make_env(rank, env_id):
@@ -57,11 +57,11 @@ def make_env(rank, env_id):
 		return env
 	return env_fn
 
-def plotRewards(iteration, rewards):
-	print (rewards)
-	fig = plt.figure()
-	plt.plot(iteration, rewards)
-	plt.pause(10)
+def plotRewards(rewards):
+	plt.figure(2)
+	plt.clf()
+	plt.plot(rewards)
+	plt.pause(0.001)
 
 
 
