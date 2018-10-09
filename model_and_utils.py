@@ -6,6 +6,9 @@ import torch.nn as nn
 from baselines.common.vec_env.subproc_vec_env import SubprocVecEnv 
 import matplotlib.pyplot as plt
 
+means = []
+
+
 class actorCritic(nn.Module):
 	def __init__(self):
 		super(actorCritic, self).__init__()
@@ -58,9 +61,12 @@ def make_env(rank, env_id):
 	return env_fn
 
 def plotRewards(rewards):
+	rewards = np.array(rewards)
+	means.append(rewards.mean())
 	plt.figure(2)
 	plt.clf()
-	plt.plot(rewards)
+	#plt.plot(rewards)
+	plt.plot(means)
 	plt.pause(0.001)
 
 

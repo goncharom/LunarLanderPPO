@@ -11,8 +11,8 @@ from torch.distributions import Categorical
 
 
 #Parameters
-iterations = 100
-steps = 200
+iterations = 300
+steps = 100
 epochs = 3
 num_processes = 4
 
@@ -132,5 +132,7 @@ for iteration in range(iterations): #Dont know if this is the most apropiate way
 	old_network.load_state_dict(dic_placeholder)
 	dic_placeholder = network.state_dict()
 	obs_ = last_ob 
+
+torch.save(network.state_dict(), './modelo')
 
 
