@@ -5,22 +5,24 @@ import gym
 import torch.nn as nn
 from baselines.common.vec_env.subproc_vec_env import SubprocVecEnv 
 import matplotlib.pyplot as plt
-
+#Input dim (224,240,3)
 means = []
 
 
 class actorCritic(nn.Module):
 	def __init__(self):
 		super(actorCritic, self).__init__()
-
+		self.conv1 = nn.Conv2d(3, 32, 8)
+		"""
 		self.fc1 = nn.Linear(8, 32)
 		self.fc2 = nn.Linear(32, 64)
 		self.fc3 = nn.Linear(64, 128)
 
 		self.value = nn.Linear(128, 1)
 		self.actor = nn.Linear(128, 4)
-
+		"""
 	def forward(self, inputs):
+		"""
 		x = F.relu(self.fc1(inputs))
 		x = F.relu(self.fc2(x))
 		x = F.relu(self.fc3(x))
@@ -30,7 +32,7 @@ class actorCritic(nn.Module):
 		value = F.relu(self.value(x))
 
 		return probs, value
-
+		"""
 
 def gae (rewards, masks, values):
 

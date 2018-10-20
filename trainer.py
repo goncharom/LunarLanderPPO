@@ -12,7 +12,7 @@ from torch.distributions import Categorical
 
 #Parameters
 iterations = 300
-steps = 100
+steps = 300
 epochs = 3
 num_processes = 4
 
@@ -27,12 +27,7 @@ network = actorCritic()
 old_network = actorCritic()
 dic_placeholder = network.state_dict()
 old_network.load_state_dict(dic_placeholder)
-"""
-total_obs = torch.zeros((steps,num_processes, obs_.shape[1]))#Yo que se
-total_rewards = torch.zeros((steps, num_processes))
-total_actions = torch.zeros((steps, num_processes))
-total_values = torch.zeros((steps+1, num_processes))
-"""
+
 total_obs = np.zeros((steps, num_processes, obs_.shape[1]))
 total_rewards = np.zeros((steps, num_processes))
 total_actions = np.zeros((steps, num_processes))
@@ -53,9 +48,9 @@ for iteration in range(iterations): #Dont know if this is the most apropiate way
 	
 
 
-		#total_obs[step].copy_(torch.from_numpy(obs_).type(torch.FloatTensor))
+
 		total_obs[step] = obs_
-		#total_values[step].copy_(values.view(-1))
+
 		total_values[step] = values.view(-1).detach().numpy()
 
 
@@ -68,9 +63,9 @@ for iteration in range(iterations): #Dont know if this is the most apropiate way
 		_, values = network(torch.from_numpy(obs_))
 
 		
-		#total_rewards[step].copy_(torch.from_numpy(rews).type(torch.FloatTensor)) 
+
 		total_rewards[step] = rews
-		#total_actions[step].copy_(actions)
+
 		total_actions[step] = actions.numpy()
 		masks[step] = dones
 
@@ -79,9 +74,9 @@ for iteration in range(iterations): #Dont know if this is the most apropiate way
 	plotRewards(rewards_to_plot)
 
 
-	#total_obs[steps-1].copy_(torch.from_numpy(obs_).type(torch.FloatTensor))
+
 	total_obs[steps-1] = obs_
-	#total_values[steps-1].copy_(values.view(-1))
+
 	total_values[steps-1] = values.view(-1).detach().numpy()
 	last_ob = obs_
 
@@ -94,7 +89,7 @@ for iteration in range(iterations): #Dont know if this is the most apropiate way
 		inds = np.arange(steps)
 		np.random.shuffle(inds)
 
-		for t in range(steps): #MAL, ES PROB DE ACCION TOMADA
+		for t in range(steps): 
 			index = inds[t]
 			probs, values = network(torch.from_numpy(total_obs[index]).type(torch.FloatTensor))
 			m = Categorical(probs)
@@ -124,7 +119,7 @@ for iteration in range(iterations): #Dont know if this is the most apropiate way
 			total_loss = policy_loss + value_loss - .01 * entropy.mean() 
 
 			optimizer.zero_grad()
-			total_loss.backward()#<-Problem 
+			total_loss.backward()
 			torch.nn.utils.clip_grad_norm_(network.parameters(), .5)
 			optimizer.step()
 
