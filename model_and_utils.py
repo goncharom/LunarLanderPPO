@@ -12,7 +12,10 @@ means = []
 class actorCritic(nn.Module):
 	def __init__(self):
 		super(actorCritic, self).__init__()
-		self.conv1 = nn.Conv2d(3, 32, 8)
+		self.conv1 = nn.Conv2d(3, 16, 8, stride=4)
+		self.conv2 = nn.Conv2d(16, 64, 5, stride=4)
+		self.conv2 = nn.Conv2d(64, 32, 4, stride=2)
+		self.fc1 = nn.Linear()
 		"""
 		self.fc1 = nn.Linear(8, 32)
 		self.fc2 = nn.Linear(32, 64)
