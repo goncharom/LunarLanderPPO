@@ -6,6 +6,7 @@ import torch.nn as nn
 from baselines.common.vec_env.subproc_vec_env import SubprocVecEnv 
 import matplotlib.pyplot as plt
 #Input dim (224,240,3)
+#Definir botontes/combinaciones de botones 
 means = []
 
 
@@ -13,9 +14,11 @@ class actorCritic(nn.Module):
 	def __init__(self):
 		super(actorCritic, self).__init__()
 		self.conv1 = nn.Conv2d(3, 16, 8, stride=4)
-		self.conv2 = nn.Conv2d(16, 64, 5, stride=4)
-		self.conv2 = nn.Conv2d(64, 32, 4, stride=2)
-		self.fc1 = nn.Linear()
+		self.conv2 = nn.Conv2d(16, 64, 5, stride=2)
+		self.conv3 = nn.Conv2d(64, 32, 3)
+		self.fc1 = nn.Linear(11*12*32, 512)
+		self.value = nn.Linear(512, 1)
+		self.actor = nn.Linear(512, 8)
 		"""
 		self.fc1 = nn.Linear(8, 32)
 		self.fc2 = nn.Linear(32, 64)
@@ -24,7 +27,12 @@ class actorCritic(nn.Module):
 		self.value = nn.Linear(128, 1)
 		self.actor = nn.Linear(128, 4)
 		"""
-	def forward(self, inputs):
+	def forward(self, x):
+		x = F.relu(self.conv1(x/255.))
+		x = F.relu(self.conv2(x))
+		x = F.max_pool2d(x, 2)
+		x = F.relu(self.conv3(x))
+		probs = 
 		"""
 		x = F.relu(self.fc1(inputs))
 		x = F.relu(self.fc2(x))
@@ -36,6 +44,8 @@ class actorCritic(nn.Module):
 
 		return probs, value
 		"""
+def buttonsTranslator(actions_vector):
+	
 
 def gae (rewards, masks, values):
 
