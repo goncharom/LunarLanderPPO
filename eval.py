@@ -14,11 +14,11 @@ env.render(mode='rgb_array')
 for t in count():
 	obs = torch.from_numpy(obs_).type(torch.FloatTensor)
 	probs, _ = network(obs)
-
+	#print (probs)
 	m = Categorical(probs)
 	action = m.sample()
-	obs_, rews, done, _ = env.step(action.numpy())
-	print (rews)
+	obs_, rewards, done, _ = env.step(action.numpy())
+	print(rewards)
 	env.render(mode='rgb_array')
 	if done:
 		obs_ = env.reset()
