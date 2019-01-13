@@ -12,9 +12,9 @@ from ppo import *
 
 #Network parameters
 
-steps = 30000
+steps = 50000
 agents = 4
-batch_size = 10
+batch_size = 25
 epochs = 3
 plot_points = 5 #number of updates between episode reward plot
 lr = 2.5e-4
@@ -32,10 +32,10 @@ for t in range(int(iterations)):
 	total_obs, total_values, total_rewards, total_actions, masks, advantage, real_values = algo.experience(batch_size)
 
 	valueLoss = algo.update(epochs, batch_size*agents, total_obs, total_actions, advantage, real_values)
-	plotValueLoss(valueLoss)
-	if (t%plot_points == 0) and (t != 0):
-		rewards_to_plot = algo.eval()
-		plotRewards(rewards_to_plot, t)
+	#plotValueLoss(valueLoss)
+	#if (t%plot_points == 0) and (t != 0):
+		#rewards_to_plot = algo.eval()
+		#plotRewards(rewards_to_plot, t)
 	print(t/iterations)
 
 

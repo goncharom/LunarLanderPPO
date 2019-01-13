@@ -49,14 +49,14 @@ class PPO():
 		return(total_obs, total_values, total_rewards, total_actions, masks, advantage, real_values)
 	def eval(self):
 		ob = self.eval_env.reset()
-		self.eval_env.render('rgb_array')
+		#self.eval_env.render('rgb_array')
 		eval_rewards = 0
 		for e in count():
 			eval_probs, _ = self.network(torch.from_numpy(ob).type(torch.FloatTensor))
 			eval_m = Categorical(eval_probs)
 			eval_action = eval_m.sample()
 			ob, eval_rews, done, _ = self.eval_env.step(eval_action.numpy())
-			self.eval_env.render('rgb_array')
+			#self.eval_env.render('rgb_array')
 
 			eval_rewards += eval_rews
 			if done:
@@ -98,7 +98,7 @@ class PPO():
 				policy_loss = -torch.min(surr1, surr2)
 				value_loss = ((values_to_backprop-real_values_[index])**2)
 				#value_loss = F.smooth_l1_loss(values_to_backprop, real_values_[index])
-				total_loss = policy_loss+value_loss-0.1*entropy
+				total_loss = policy_loss+value_loss-0.01*entropy
 
 				self.optimizer.zero_grad()
 				total_loss.backward()
