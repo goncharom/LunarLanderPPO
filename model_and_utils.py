@@ -19,10 +19,10 @@ class actorCritic(nn.Module):
 	def __init__(self):
 		super(actorCritic, self).__init__()
 
-		self.fc1 = nn.Linear(8, 64)
-		self.fc2 = nn.Linear(64, 64)
-		self.critic = nn.Linear(64, 1)
-		self.actor = nn.Linear(64, 4)
+		self.fc1 = nn.Linear(8, 16)
+		self.fc2 = nn.Linear(16, 16)
+		self.critic = nn.Linear(16, 1)
+		self.actor = nn.Linear(16, 4)
 
 
 	def forward(self, inputs):
@@ -42,13 +42,13 @@ def gae (rewards, masks, values):
 	lambd = 0.95
 
 	T, W = rewards.shape
-
+	real_values = np.zeros((T, W))
 	advantages = np.zeros((T, W))
 
 	adv_t = 0
 	for t in reversed(range(T)):
 
-		delta = rewards[t] + values[t+1] * gamma*masks[t] - values[t]
+		delta = rewards[t]*5e-2 + values[t+1] * gamma*masks[t] - values[t]
 
 		adv_t = delta + adv_t*gamma*lambd*masks[t]
 
@@ -57,6 +57,8 @@ def gae (rewards, masks, values):
 	real_values = values[:T] + advantages
 
 	return advantages, real_values
+
+
 
 def make_env(rank, env_id):
 	def env_fn():

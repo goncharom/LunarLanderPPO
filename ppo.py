@@ -87,7 +87,7 @@ class PPO():
 				m = Categorical(probs)
 				action_taken_prob = probs[total_actions[index]]
 				entropy = m.entropy()
-				print(entropy)
+
 				old_probs, _ = self.old_network(total_obs_[index].view(-1))
 				old_action_taken_probs = old_probs[total_actions[index]]
 				old_probs.detach()
@@ -96,8 +96,10 @@ class PPO():
 				surr1 = ratios * advantage_[index]
 				surr2 = torch.clamp(ratios, min=(1.-.1), max=(1.+.1))*advantage_[index]
 				policy_loss = -torch.min(surr1, surr2)
-				value_loss = 0.5*((real_values_[index]-values_to_backprop).pow(2))
-				total_loss = policy_loss+0.5*value_loss-0.1*entropy
+				value_loss = ((values_to_backprop-real_values_[index])**2)
+				#value_loss = F.smooth_l1_loss(values_to_backprop, real_values_[index])
+				total_loss = policy_loss+value_loss-0.1*entropy
+
 				self.optimizer.zero_grad()
 				total_loss.backward()
 				torch.nn.utils.clip_grad_norm_(self.network.parameters(), 0.5)
